@@ -1,13 +1,25 @@
-"use client"; // Bắt buộc phải có dòng này để dùng hook usePathname
+"use client"; // Bắt buộc phải có dòng này để dùng hook usePathname và Zustand Store
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingCart, User, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
+// 1. Import Store giỏ hàng mà chúng ta vừa tạo ở Bước 2
+import { useCartStore } from "@/store/useCartStore";
 
 export default function Header() {
-  const pathname = usePathname(); // Lấy đường dẫn hiện tại của trình duyệt
+  const pathname = usePathname();
+  
+  // 2. Lấy tổng số lượng sản phẩm từ Store
+  const totalItems = useCartStore((state) => state.getTotalItems());
+  
+  // 3. Xử lý Hydration: Đảm bảo dữ liệu LocalStorage được nạp xong trước khi hiển thị badge
+  // (Tránh lỗi lệch dữ liệu giữa Server và Client trong Next.js)
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // Danh sách các menu để dễ quản lý
   const navLinks = [
     { name: "Trang chủ", href: "/" },
     { name: "Sản phẩm", href: "/products" },
@@ -15,12 +27,11 @@ export default function Header() {
     { name: "Liên hệ", href: "/contact" },
   ];
 
-  // Hàm kiểm tra xem menu có đang được chọn hay không
   const isActive = (path: string) => {
     if (path === "/") {
-      return pathname === "/"; // Trang chủ phải khớp tuyệt đối
+      return pathname === "/";
     }
-    return pathname.startsWith(path); // Các trang khác chỉ cần bắt đầu bằng (ví dụ /products/123 vẫn sáng menu Sản phẩm)
+    return pathname.startsWith(path);
   };
 
   return (
@@ -41,8 +52,8 @@ export default function Header() {
                 href={link.href}
                 className={`px-5 py-2 rounded-full transition-all duration-300 ${
                   active
-                    ? "bg-blue-600 text-white shadow-md" // 🌟 Nổi bật: Nền xanh, chữ trắng khi đang ở trang này
-                    : "text-gray-600 hover:bg-blue-50 hover:text-blue-600" // Bình thường: Chữ xám, trỏ chuột vào nền xanh nhạt
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
                 }`}
               >
                 {link.name}
@@ -51,7 +62,7 @@ export default function Header() {
           })}
         </nav>
 
-        {/* Các nút bấm: User, Giỏ hàng, Menu Mobile */}
+        {/* Các nút bấm */}
         <div className="flex items-center gap-5">
           <button className="text-gray-600 hover:text-blue-600 transition-colors">
             <User size={22} />
@@ -59,9 +70,13 @@ export default function Header() {
           
           <Link href="/cart" className="relative text-gray-600 hover:text-blue-600 transition-colors">
             <ShoppingCart size={22} />
-            <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-              3
-            </span>
+            
+            {/* 4. HIỂN THỊ CON SỐ THẬT: Chỉ hiện badge đỏ nếu có hàng trong giỏ */}
+            {mounted && totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white animate-in zoom-in duration-300">
+                {totalItems}
+              </span>
+            )}
           </Link>
           
           <button className="md:hidden text-gray-600">

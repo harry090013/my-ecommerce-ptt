@@ -1,31 +1,32 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-import { products } from "@/data/products";
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
 
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
+    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    if (!apiKey) {
+      return NextResponse.json({ error: "Thiếu API Key" }, { status: 500 });
+    }
 
-    // Gom toàn bộ ngữ cảnh và câu hỏi vào một prompt duy nhất
-    const prompt = `
-      Bạn là nhân viên tư vấn của HarryShop.
-      Danh sách sản phẩm hiện có: ${JSON.stringify(products)}
-      
-      Khách hàng vừa hỏi: "${message}"
-      
-      Quy tắc: Dựa vào danh sách trên để trả lời ngắn gọn, thân thiện. Nếu không có sản phẩm khách hỏi, hãy báo không có.
-    `;
+    const genAI = new GoogleGenerativeAI(apiKey);
+    
+    // Sử dụng hậu tố -latest và TẠM THỜI BỎ systemInstruction để test kết nối gốc
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash-latest" 
+    });
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const result = await model.generateContent(message);
+    const response = await result.response;
+    
+    return NextResponse.json({ text: response.text() });
 
-    return NextResponse.json({ text });
   } catch (error: any) {
-    console.error("=== LỖI GEMINI ===", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("LỖI CHI TIẾT:", error.message);
+    return NextResponse.json(
+      { error: "Lỗi kết nối API", detail: error.message }, 
+      { status: 500 }
+    );
   }
 }

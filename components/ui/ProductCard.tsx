@@ -1,20 +1,39 @@
+"use client"; // Bắt buộc phải có để sử dụng onClick và Store
+
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Check } from "lucide-react";
+import { useState } from "react";
 import { Product } from "@/data/products";
+import { useCartStore } from "@/store/useCartStore"; // Import store chúng ta vừa tạo
 
-// Định nghĩa kiểu dữ liệu đầu vào cho Component
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const addToCart = useCartStore((state) => state.addToCart);
+  const [isAdded, setIsAdded] = useState(false);
+
   // Hàm format tiền tệ VNĐ
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
+  };
+
+  // --- BƯỚC 3: LOGIC THÊM VÀO GIỎ ---
+  const handleAddToCart = (e: React.MouseEvent) => {
+    // Ngăn chặn sự kiện nổi bọt (không cho click vào nút bị nhảy vào Link của thẻ cha)
+    e.stopPropagation();
+    e.preventDefault();
+
+    addToCart(product);
+    
+    // Hiệu ứng phản hồi cho khách hàng (Marketing UX)
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1500);
   };
 
   return (
@@ -57,16 +76,20 @@ export default function ProductCard({ product }: ProductCardProps) {
           <span className="text-xl font-extrabold text-gray-900">
             {formatPrice(product.price)}
           </span>
+          
           <button 
-            disabled={!product.inStock}
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
-              product.inStock 
-                ? "bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white" 
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+            onClick={handleAddToCart}
+            disabled={!product.inStock || isAdded}
+            className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ${
+              !product.inStock 
+                ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                : isAdded 
+                  ? "bg-green-500 text-white" // Đổi sang màu xanh lá khi đã thêm
+                  : "bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white"
             }`}
-            title="Thêm vào giỏ hàng"
+            title={isAdded ? "Đã thêm" : "Thêm vào giỏ hàng"}
           >
-            <ShoppingCart size={20} />
+            {isAdded ? <Check size={20} /> : <ShoppingCart size={20} />}
           </button>
         </div>
       </div>

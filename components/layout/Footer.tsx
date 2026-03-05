@@ -7,7 +7,7 @@ export default function Footer() {
         <div>
           <h3 className="text-xl font-bold text-white mb-4">Minh Hồng Biotech</h3>
           <p className="text-sm leading-relaxed text-gray-400">
-            Hệ thống cửa hàng cung cấp các sản phẩm công nghệ chất lượng cao. Trải nghiệm mua sắm thông minh cùng Trợ lý AI 24/7.
+            Hệ thống cửa hàng cung cấp các sản phẩm công nghệ sinh học chất lượng cao. Trải nghiệm mua sắm thông minh cùng Trợ lý AI 24/7.
           </p>
         </div>
         <div>

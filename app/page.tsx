@@ -1,29 +1,76 @@
 "use client"; // Bắt buộc phải có để dùng State cho Carousel và Form
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ChevronLeft, ChevronRight, Send, CheckCircle2 } from "lucide-react";
 import { products } from "@/data/products";
 import ProductCard from "@/components/ui/ProductCard";
+import { articles } from "../data/articles";
+
+// Component nhỏ để xử lý việc đếm số khi lướt đến
+const CounterItem = ({ endValue, label }: { endValue: number; label: string }) => {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setIsVisible(true);
+      },
+      { threshold: 0.5 }
+    );
+    if (elementRef.current) observer.observe(elementRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    let start = 0;
+    const duration = 2000; // Chạy trong 2 giây
+    const increment = endValue / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= endValue) {
+        setCount(endValue);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [isVisible, endValue]);
+
+  return (
+    <div ref={elementRef} className="flex flex-col items-center text-white">
+      <span className="text-6xl md:text-8xl font-light mb-4">{count}</span>
+      <span className="text-xl md:text-2xl font-medium tracking-widest uppercase">{label}</span>
+    </div>
+  );
+};
+
 
 // --- DỮ LIỆU MẪU (Mock Data) ---
 const carouselItems = [
-  { id: 1, image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200", title: "Công nghệ đột phá 2026", desc: "Khám phá các thiết bị thông minh thế hệ mới nhất." },
-  { id: 2, image: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=1200", title: "Góc làm việc hoàn hảo", desc: "Nâng tầm không gian sáng tạo và hiệu suất của bạn." },
-  { id: 3, image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=1200", title: "Phụ kiện đỉnh cao", desc: "Trải nghiệm âm thanh và hình ảnh sắc nét không giới hạn." },
+  { id: 1, image: "/images/carosel1.png", title: "Sản phẩm từ Enzyme thực vật", desc: "Sản phẩm sinh học Minh Hồng được lên men Enzyme từ vỏ rau, củ, hoa, quả,..." },
+  { id: 2, image: "/images/carosel2.png", title: "Thân thiện với môi trường", desc: "Nhờ chế tạo từ vỏ rau củ nên MH đã giúp tiêu thụ một lượng lớn rác hữu cơ thải ra môi trường, vỏ rau củ sau khi ủ xong có thể bón cây, nước thải từ các sản phẩm của MH có thể dùng để tưới cây hoặc thải ra môi trường để diệt lăng quăng, bọ gậy và không gay hại cho nguồn nước." },
+  { id: 3, image: "/images/carosel3.png", title: "Ít bọt, ít nhờn, sạch nhanh, mùi dễ chịu.", desc: "Sản phẩm của Minh Hồng ít bọt và nhớt, nhờ vậy mà quá trình tẩy rửa trở nên nhẹ nhàng hơn khi xả sạch với ít lần nước nhưng vẫn đạt hiệu quả tẩy sạch sâu các vết bẩn." },
 ];
 
-const articles = [
-  { id: 1, title: "Top 5 tai nghe chống ồn tốt nhất", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=400", date: "04/03/2026", excerpt: "Đánh giá chi tiết các dòng tai nghe được ưa chuộng nhất năm nay..." },
-  { id: 2, title: "Bí quyết setup góc làm việc tối giản", image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=400", date: "01/03/2026", excerpt: "Tối ưu hóa không gian làm việc của bạn để tăng 200% sự tập trung..." },
-  { id: 3, title: "Bàn phím cơ là gì? Tại sao nên dùng?", image: "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=400", date: "25/02/2026", excerpt: "Những lý do bạn nên vứt bỏ bàn phím màng và nâng cấp ngay lập tức..." },
-];
+// const articles = [
+//   { id: 1, title: "Top 5 tai nghe chống ồn tốt nhất", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=400", date: "04/03/2026", excerpt: "Đánh giá chi tiết các dòng tai nghe được ưa chuộng nhất năm nay..." },
+//   { id: 2, title: "Bí quyết setup góc làm việc tối giản", image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=400", date: "01/03/2026", excerpt: "Tối ưu hóa không gian làm việc của bạn để tăng 200% sự tập trung..." },
+//   { id: 3, title: "Bàn phím cơ là gì? Tại sao nên dùng?", image: "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=400", date: "25/02/2026", excerpt: "Những lý do bạn nên vứt bỏ bàn phím màng và nâng cấp ngay lập tức..." },
+// ];
 
 export default function Home() {
   // --- LOGIC CAROUSEL ---
   const [currentSlide, setCurrentSlide] = useState(0);
   
+// 2. Lấy ra 3 bài mới nhất (bài viết có ID lớn nhất hoặc nằm đầu mảng)
+  const latestArticles = articles.slice(0, 3);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
@@ -44,6 +91,8 @@ export default function Home() {
 
   const featuredProducts = products.slice(0, 3); // Lấy 3 sản phẩm đầu tiên
 
+
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       
@@ -54,7 +103,7 @@ export default function Home() {
             Mua sắm thông minh cùng <span className="text-blue-600">Trợ lý AI</span>
           </h1>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Trải nghiệm phong cách mua sắm thế hệ mới. Trò chuyện ngay với AI ở góc màn hình để tìm sản phẩm phù hợp nhất.
+            Trải nghiệm phong cách mua sắm thế hệ mới. Trò chuyện ngay với AI ở góc màn hình để tìm sản phẩm từ Minh Hồng Biotech phù hợp nhất với bạn.
           </p>
         </div>
       </section>
@@ -95,18 +144,44 @@ export default function Home() {
               Xem thêm tin tức <ArrowRight size={16} />
             </Link>
           </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {articles.map((article) => (
-              <div key={article.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+            {latestArticles.map((article) => (
+              <Link 
+                key={article.id} 
+                href={`/news/${article.id}`} 
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all group block"
+              >
                 <div className="relative h-48 overflow-hidden">
-                  <Image src={article.image} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 100vw, 33vw" />
+                  <Image 
+                    src={article.image} 
+                    alt={article.title} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                    sizes="(max-width: 768px) 100vw, 33vw" 
+                  />
+                  {/* Badge danh mục bài viết */}
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider shadow-lg">
+                      {article.category}
+                    </span>
+                  </div>
                 </div>
+                
                 <div className="p-5">
-                  <span className="text-xs font-semibold text-blue-600 mb-2 block">{article.date}</span>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 hover:text-blue-600 cursor-pointer">{article.title}</h3>
-                  <p className="text-gray-500 text-sm line-clamp-3">{article.excerpt}</p>
+                  <span className="text-xs font-semibold text-gray-400 mb-2 block">{article.date}</span>
+                  <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                    {article.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm line-clamp-3 leading-relaxed">
+                    {article.excerpt}
+                  </p>
+                  
+                  <div className="mt-4 flex items-center text-blue-600 text-sm font-bold gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Đọc thêm <ArrowRight size={14} />
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -129,7 +204,87 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. Ô ĐẶT MUA NHANH */}
+      {/* 6. PHẦN GIẢI THƯỞNG & CHỨNG NHẬN (SOCIAL PROOF) */}
+      <section className="py-20 bg-gray-50 border-y border-gray-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="flex flex-col md:flex-row items-center gap-12 lg:gap-20">
+            
+            {/* Cột trái: Hình ảnh sản phẩm tiêu biểu */}
+            <div className="w-full md:w-1/2 flex justify-center">
+              <div className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                <Image 
+                  src="/images/Nuocruachen.png"
+                  alt="Sản phẩm tiêu biểu"
+                  fill
+                  className="object-cover"
+                />
+                {/* Lớp phủ trang trí cho ảnh thêm sang trọng */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+            </div>
+
+            {/* Cột phải: Nội dung giải thưởng */}
+            <div className="w-full md:w-1/2">
+              <div className="inline-block h-1 w-20 bg-blue-600 mb-6"></div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+                Các Giải Thưởng Đã Đạt Được
+              </h2>
+              <p className="text-gray-500 mb-10 leading-relaxed italic">
+                Sự khẳng định về chất lượng và uy tín thông qua các giải thưởng danh giá trong và ngoài nước.
+              </p>
+
+              {/* Danh sách giải thưởng */}
+              <div className="space-y-10">
+                {/* Giải thưởng 1 */}
+                <div className="relative pl-8 border-l-2 border-green-500">
+                  <h3 className="text-xl font-bold text-green-700 mb-2">Giải thưởng môi trường 2017</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Giải thưởng Môi trường Việt Nam là giải thưởng do Bộ TN&MT trao tặng cho các tổ chức, cá nhân có thành tích xuất sắc trong sự nghiệp bảo vệ môi trường.
+                  </p>
+                </div>
+
+                {/* Giải thưởng 2 */}
+                <div className="relative pl-8 border-l-2 border-green-500">
+                  <h3 className="text-xl font-bold text-green-700 mb-2">Giải nhất toàn quốc HATCH!FAIR 2016</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    HATCH! FAIR 2016 với chủ đề "INVISIBLE TECHNOLOGY" là chương trình triển lãm và hội nghị khởi nghiệp lớn nhất tại Việt Nam, thu hút hàng nghìn khách tham dự.
+                  </p>
+                </div>
+
+                {/* Giải thưởng 3 */}
+                <div className="relative pl-8 border-l-2 border-green-500">
+                  <h3 className="text-xl font-bold text-green-700 mb-2">Đứng thứ 5 khối KT ĐNA về ảnh hưởng xã hội 2017</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    Được đánh giá cao về những đóng góp tích cực cho cộng đồng và sự phát triển bền vững tại khu vực Đông Nam Á.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 7.  PHẦN THỐNG KÊ (STATISTICS COUNTER) */}
+      <section className="relative py-28 overflow-hidden">
+        {/* Background Image với lớp phủ màu xanh đặc trưng */}
+        <div className="absolute inset-0 z-0">
+          
+          {/* Lớp phủ màu xanh Mint giống trong ảnh Harry gửi */}
+          <div className="absolute inset-0 bg-[#50C878]/80 mix-blend-multiply"></div>
+        </div>
+
+        <div className="relative z-10 container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8">
+            <CounterItem endValue={100} label="Đại Lý" />
+            <CounterItem endValue={5} label="Nhà Phân Phối" />
+            <CounterItem endValue={8} label="Sản Phẩm" />
+            <CounterItem endValue={3} label="Giải Thưởng" />
+          </div>
+        </div>
+      </section>      
+
+      {/* 8. Ô ĐẶT MUA NHANH */}
       <section className="py-16 bg-blue-600 text-white">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-10">
@@ -176,6 +331,7 @@ export default function Home() {
           </form>
         </div>
       </section>
+
 
     </div>
   );

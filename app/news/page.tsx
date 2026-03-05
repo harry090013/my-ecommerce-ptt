@@ -1,132 +1,111 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, User, ArrowRight, Search } from "lucide-react";
+// 1. Import kho dữ liệu chung từ thư mục data ở gốc dự án
+import { articles } from "../../data/articles";
 
 export const metadata = {
-  title: "Tin tức công nghệ | HarryShop",
-  description: "Cập nhật những xu hướng và mẹo vặt công nghệ mới nhất",
+  title: "Tin tức & Chia sẻ kiến thức | HarryShop",
+  description: "Cập nhật những xu hướng công nghệ và kiến thức về sức khỏe từ Harry.",
 };
 
-// Dữ liệu mẫu bài viết (Sau này sếp có thể tách ra file riêng như products.ts)
-const allArticles = [
-  {
-    id: 1,
-    title: "Đánh giá chi tiết Tai nghe chống ồn Sony WH-1000XM5",
-    category: "Đánh giá",
-    date: "04/03/2026",
-    author: "Harry",
-    image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=800",
-    excerpt: "Sony WH-1000XM5 không chỉ là một chiếc tai nghe, đó là một trải nghiệm âm thanh hoàn hảo với khả năng chống ồn vượt trội so với thế hệ trước..."
-  },
-  {
-    id: 2,
-    title: "Cách setup bàn làm việc tối giản (Minimalist Setup)",
-    category: "Mẹo vặt",
-    date: "01/03/2026",
-    author: "Admin",
-    image: "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=800",
-    excerpt: "Một không gian làm việc sạch sẽ giúp bạn tăng năng suất lao động. Hãy cùng HarryShop khám phá 5 bước để có một setup tối giản..."
-  },
-  {
-    id: 3,
-    title: "Bàn phím cơ và những điều bạn cần biết trước khi mua",
-    category: "Kiến thức",
-    date: "28/02/2026",
-    author: "Kỹ thuật",
-    image: "https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800",
-    excerpt: "Switch là gì? Keycap là gì? Tại sao giá bàn phím cơ lại chênh lệch nhau nhiều đến thế? Bài viết này sẽ giải đáp tất cả..."
-  },
-  {
-    id: 4,
-    title: "Tại sao nên sử dụng chuột công thái học?",
-    category: "Sức khỏe",
-    date: "20/02/2026",
-    author: "Harry",
-    image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=800",
-    excerpt: "Đau cổ tay khi làm việc lâu là vấn đề của nhiều người. Chuột công thái học chính là giải pháp cứu cánh cho bạn..."
-  },
-];
-
 export default function NewsPage() {
-  const featuredPost = allArticles[0]; // Bài viết nổi bật đầu tiên
-  const regularPosts = allArticles.slice(1); // Các bài còn lại
+  // 2. Tự động lấy bài viết mới nhất làm bài viết Nổi bật (Featured)
+  const featuredPost = articles[0]; 
+  // 3. Các bài viết còn lại sẽ nằm trong danh sách bên dưới
+  const regularPosts = articles.slice(1);
 
   return (
     <div className="bg-white min-h-screen">
       {/* Tiêu đề trang & Tìm kiếm */}
-      <section className="bg-gray-50 py-12 border-b border-gray-100">
+      <section className="bg-gray-50 py-16 border-b border-gray-100">
         <div className="container mx-auto px-4 max-w-6xl text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Tin tức & Đánh giá</h1>
-          <p className="text-gray-500 mb-8 max-w-xl mx-auto">
-            Nơi chia sẻ kiến thức, kinh nghiệm và những xu hướng công nghệ mới nhất dành cho bạn.
+          <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">Tin tức & Chia sẻ</h1>
+          <p className="text-gray-500 mb-8 max-w-2xl mx-auto text-lg">
+            Nơi Minh Hồng chia sẻ những trải nghiệm thực tế về công nghệ, sức khỏe và hành trình xây dựng nên những sản phẩm từ hữu cơ.
           </p>
           <div className="relative max-w-md mx-auto">
             <input 
               type="text" 
               placeholder="Tìm kiếm bài viết..." 
-              className="w-full pl-12 pr-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-sm"
+              className="w-full pl-12 pr-4 py-3 rounded-full border border-gray-200 focus:ring-2 focus:ring-blue-600 outline-none transition-all shadow-sm"
             />
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           </div>
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="container mx-auto px-4 py-16 max-w-6xl">
         {/* BÀI VIẾT NỔI BẬT (FEATURED) */}
-        <div className="mb-16">
-          <Link href={`/news/${featuredPost.id}`} className="group grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="relative h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-lg">
-              <Image src={featuredPost.image} alt={featuredPost.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-            </div>
-            <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-600 text-xs font-bold mb-4 uppercase tracking-wider">
-                {featuredPost.category}
-              </span>
-              <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
-                {featuredPost.title}
-              </h2>
-              <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                {featuredPost.excerpt}
-              </p>
-              <div className="flex items-center gap-6 text-sm text-gray-400">
-                <div className="flex items-center gap-2"><Calendar size={16} /> {featuredPost.date}</div>
-                <div className="flex items-center gap-2"><User size={16} /> {featuredPost.author}</div>
+        {featuredPost && (
+          <div className="mb-20">
+            <Link href={`/news/${featuredPost.id}`} className="group grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div className="relative h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-2xl">
+                <Image 
+                  src={featuredPost.image} 
+                  alt={featuredPost.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                  priority
+                />
               </div>
-            </div>
-          </Link>
-        </div>
+              <div>
+                <span className="inline-block px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold mb-6 uppercase tracking-widest">
+                  {featuredPost.category}
+                </span>
+                <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 group-hover:text-blue-600 transition-colors leading-tight">
+                  {featuredPost.title}
+                </h2>
+                <p className="text-gray-600 text-xl mb-8 leading-relaxed line-clamp-3">
+                  {featuredPost.excerpt}
+                </p>
+                <div className="flex items-center gap-6 text-sm text-gray-400 font-medium">
+                  <div className="flex items-center gap-2"><Calendar size={18} className="text-blue-600" /> {featuredPost.date}</div>
+                  <div className="flex items-center gap-2"><User size={18} className="text-blue-600" /> {featuredPost.author}</div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
 
         {/* DANH SÁCH BÀI VIẾT THƯỜNG */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {regularPosts.map((post) => (
             <Link key={post.id} href={`/news/${post.id}`} className="group flex flex-col">
-              <div className="relative h-56 rounded-2xl overflow-hidden mb-4 shadow-sm">
-                <Image src={post.image} alt={post.title} fill className="object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="relative h-60 rounded-2xl overflow-hidden mb-6 shadow-md">
+                <Image 
+                  src={post.image} 
+                  alt={post.title} 
+                  fill 
+                  className="object-cover group-hover:scale-110 transition-transform duration-500" 
+                />
               </div>
-              <div className="flex items-center gap-3 text-xs font-semibold text-blue-600 mb-2">
+              <div className="flex items-center gap-3 text-xs font-bold text-blue-600 mb-3 uppercase tracking-wider">
                 <span>{post.category}</span>
                 <span className="text-gray-300">•</span>
                 <span className="text-gray-400 font-normal">{post.date}</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 line-clamp-2 transition-colors">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 line-clamp-2 transition-colors">
                 {post.title}
               </h3>
-              <p className="text-gray-500 text-sm line-clamp-3 mb-4">
+              <p className="text-gray-500 text-sm line-clamp-3 mb-6 leading-relaxed">
                 {post.excerpt}
               </p>
-              <div className="mt-auto flex items-center gap-1 text-sm font-bold text-gray-900 group-hover:gap-2 transition-all">
-                Đọc thêm <ArrowRight size={16} />
+              <div className="mt-auto flex items-center gap-2 text-sm font-black text-gray-900 group-hover:text-blue-600 transition-all">
+                ĐỌC BÀI VIẾT <ArrowRight size={16} />
               </div>
             </Link>
           ))}
         </div>
 
-        {/* NÚT TẢI THÊM (PHÂN TRANG MOCKUP) */}
-        <div className="mt-16 text-center">
-          <button className="px-8 py-3 rounded-full border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-600 hover:text-white transition-all shadow-md">
-            Xem thêm bài viết
-          </button>
-        </div>
+        {/* NÚT TẢI THÊM */}
+        {articles.length > 4 && (
+          <div className="mt-20 text-center">
+            <button className="px-10 py-4 rounded-full bg-gray-900 text-white font-bold hover:bg-blue-600 transition-all shadow-xl hover:-translate-y-1">
+              Xem thêm nhiều bài viết hơn
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
