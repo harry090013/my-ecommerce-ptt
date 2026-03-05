@@ -33,7 +33,7 @@ export default function ChatWidget() {
       if (!res.ok) {
         setChatHistory(prev => [...prev, { 
           role: "bot", 
-          text: `⚠️ Hệ thống đang bảo trì một chút. Harry sẽ quay lại hỗ trợ bạn sớm nhất!` 
+          text: `⚠️ Hệ thống đang bảo trì một chút. Phan Thanh sẽ quay lại hỗ trợ bạn sớm nhất!` 
         }]);
       } else {
         setChatHistory(prev => [...prev, { role: "bot", text: data.text }]);
