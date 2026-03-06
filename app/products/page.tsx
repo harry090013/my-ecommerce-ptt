@@ -3,8 +3,8 @@ import ProductCard from "@/components/ui/ProductCard";
 import { PackageSearch } from "lucide-react";
 
 export const metadata = {
-  title: "Tất cả sản phẩm | HarryShop",
-  description: "Khám phá bộ sưu tập thiết bị công nghệ đỉnh cao",
+  title: "Minh Hồng Biotech",
+  description: "Khám phá toàn bộ sản phẩm từ Minh Hồng Biotech",
 };
 
 export default function ProductsPage() {

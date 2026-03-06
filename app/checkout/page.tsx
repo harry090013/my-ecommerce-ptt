@@ -40,7 +40,7 @@ export default function CheckoutPage() {
         </div>
         <h1 className="text-4xl font-black text-gray-900 mb-4 text-center">Đặt hàng thành công!</h1>
         <p className="text-gray-500 text-lg text-center max-w-md mb-8">
-          Cảm ơn Harry đã tin tưởng **Minh Hồng Biotech**. Mã đơn hàng của bạn là #MH{Math.floor(Math.random() * 10000)}. Chúng tôi sẽ gọi điện xác nhận ngay!
+          Cảm ơn Phan Thị Thanh đã tin tưởng **Minh Hồng Biotech**. Mã đơn hàng của bạn là #MH{Math.floor(Math.random() * 10000)}. Chúng tôi sẽ gọi điện xác nhận ngay!
         </p>
         <Link href="/" className="bg-blue-600 text-white px-10 py-4 rounded-full font-bold shadow-lg hover:bg-blue-700 transition-all">
           Quay về trang chủ
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Email (không bắt buộc)</label>
-                  <input type="email" placeholder="harry@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
+                  <input type="email" placeholder="phanthithanh@gmail.com" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ chi tiết</label>

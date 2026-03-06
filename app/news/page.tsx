@@ -5,8 +5,8 @@ import { Calendar, User, ArrowRight, Search } from "lucide-react";
 import { articles } from "../../data/articles";
 
 export const metadata = {
-  title: "Tin tức & Chia sẻ kiến thức | HarryShop",
-  description: "Cập nhật những xu hướng công nghệ và kiến thức về sức khỏe từ Harry.",
+  title: "Minh Hồng Biotech",
+  description: "Cập nhật những sản phẩm sinh học đến từ Minh Hồng Biotech.",
 };
 
 export default function NewsPage() {

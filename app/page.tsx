@@ -100,10 +100,10 @@ export default function Home() {
       <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
         <div className="container mx-auto px-4 max-w-6xl text-center">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
-            Mua sắm thông minh cùng <span className="text-blue-600">Trợ lý AI</span>
+            Sống sạch an lành cùng  <span className="text-blue-600">Minh Hồng Biotech</span>
           </h1>
           <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Trải nghiệm phong cách mua sắm thế hệ mới. Trò chuyện ngay với AI ở góc màn hình để tìm sản phẩm từ Minh Hồng Biotech phù hợp nhất với bạn.
+            Thay đổi thói quen nhỏ, tạo tác động lớn cho môi trường. Nhắn tin ngay với Trợ lý AI ở góc dưới bên phải màn hình để khám phá bộ sưu tập sản phẩm sạch, góp phần bảo vệ nguồn nước và hệ sinh thái.
           </p>
         </div>
       </section>
